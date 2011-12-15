@@ -1,4 +1,4 @@
-package src.com;
+package com;
 
 import java.io.File;
 import java.io.IOException;
@@ -8,7 +8,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
-import src.com.networking.transaction.TransactionManagerImpl;
+import com.networking.transaction.TransactionManagerImpl;
 
 public class Client implements Runnable {
 	
