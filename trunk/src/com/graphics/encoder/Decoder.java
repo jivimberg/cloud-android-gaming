@@ -1,4 +1,11 @@
-package src.com.graphics.encoder;
+package com.graphics.encoder;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+
+import com.sun.media.jai.codec.JPEGDecodeParam;
+import com.sun.media.jai.codecimpl.JPEGImageDecoder;
+
 
 public class Decoder {
 //

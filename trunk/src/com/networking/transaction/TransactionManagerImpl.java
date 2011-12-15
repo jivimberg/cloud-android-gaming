@@ -1,4 +1,4 @@
-package src.com.networking.transaction;
+package com.networking.transaction;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
