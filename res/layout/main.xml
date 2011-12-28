@@ -11,12 +11,12 @@
         android:layout_height="wrap_content"
     />
     
-    <!-- <Button
+    <Button
         android:id="@+id/close_button"
         android:text="@string/closeTx"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-    />-->
+    />
     
     <ImageView 
     	android:id="@+id/imageToShow"
