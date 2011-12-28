@@ -1,11 +1,6 @@
 package com;
 
-import java.util.Date;
-
 import src.com.R;
-
-import com.graphics.VortexView;
-
 
 import android.app.Activity;
 import android.graphics.drawable.Drawable;
@@ -20,18 +15,16 @@ import android.widget.ImageView;
 
 public class Main extends Activity {
 
-	private VortexView _vortexView;
 	private Button startUDPTrafficButton;
-	//private Button stopUDPTrafficButton;
+	private Button stopUDPTrafficButton;
 	private Handler handler;
 
-	private Server server;
+	private Client server;
 
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle icicle) {
 		super.onCreate(icicle);
-		_vortexView = new VortexView(this);
 		setContentView(R.layout.main);
 
 		handler = new Handler() {
@@ -39,19 +32,19 @@ public class Main extends Activity {
 			public void handleMessage(Message msg) {
 				// do something in the user interface to display data from message
 				Drawable img = (Drawable) msg.obj;
-				Log.d("UI", "Got an image to draw");
+				Log.i("UI", "Got an image to draw");
 				ImageView myImage = (ImageView) findViewById(R.id.imageToShow);
 				myImage.setBackgroundDrawable(img);
-				Log.d("UI", "Drawing!");
-				Date date = new Date();
-				System.out.println("* Time: " + date.getMinutes() + " : " + date.getSeconds());
+				Log.i("UI", "Drawing!");
+				//Date date = new Date();
+				//System.out.println("* Time: " + date.getMinutes() + " : " + date.getSeconds());
 			}
 		};
 		
 		startUDPTrafficButton = (Button) findViewById(R.id.search_button);
 		startUDPTrafficButton.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				server = new Server(handler);
+				server = new Client(handler);
 				server.start();
 				try {
 					Thread.sleep(500);
@@ -63,19 +56,14 @@ public class Main extends Activity {
 		});
 		
 		
-		//TODO (tomi) Comentado para poder compilar
-		/*stopUDPTrafficButton = (Button) findViewById(R.id.close_button);
+		stopUDPTrafficButton = (Button) findViewById(R.id.close_button);
 		stopUDPTrafficButton.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				Log.d("UDP", "S: Wanting to start closure...");
-				try {
-					server.join();
-					server.closeTransaction();
-				} catch (InterruptedException e) {
-					Log.e("UDP", e.getMessage());
-				}
+				Log.i("UDP", "S: Wanting to start closure...");
+				server.interrupt();
+				server.closeTransaction();
 			}
-		});*/
+		});
 		
 	}
 }

@@ -8,12 +8,14 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.Socket;
 
+import com.utils.ImageUtils;
+
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
-public class Server extends Thread {
+public class Client extends Thread {
 
 	public static final String SERVER_IP = "10.0.2.15"; 
 	public static final int UDP_LISTENING_PORT = 5000;
@@ -24,7 +26,7 @@ public class Server extends Thread {
 	
 	private Handler uiHandler;
 	
-	public Server(Handler uiHandler){
+	public Client(Handler uiHandler){
 		this.uiHandler = uiHandler;
 	}
 	
@@ -58,7 +60,10 @@ public class Server extends Thread {
 				//Log.d("UDP","packet index: " + idx + " -> " + System.currentTimeMillis());
 				//idx++;
 				
-				byte[] data = packet.getData();
+				byte[] rawData = packet.getData();
+				//Log.d("UDP", "rawData length: "+rawData.length);
+				byte[] data = ImageUtils.extractBytes(rawData);
+				Log.d("UDP", "data length: "+data.length);
 				InputStream img = new ByteArrayInputStream(data); //Sin desencodear
 				
 				/* Create Drawable */
@@ -70,7 +75,7 @@ public class Server extends Thread {
 				if (uiHandler != null) {
 					// sendMessage
 					uiHandler.sendMessage(message);
-					Log.i("Server", "Message send to UI");
+					Log.i("Server", "Message sent to UI");
 				}
 				
 			}
