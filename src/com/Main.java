@@ -1,7 +1,14 @@
 package com;
 
-import src.com.R;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
+import src.com.R;
+import src.com.R.id;
+
+import android.R.color;
 import android.app.Activity;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -12,9 +19,13 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
 
 public class Main extends Activity {
 
+	private static final int COLS = 2;
+	private static final int ROWS = 2;
 	private Button startUDPTrafficButton;
 	private Button stopUDPTrafficButton;
 	private Handler handler;
@@ -26,17 +37,34 @@ public class Main extends Activity {
 	public void onCreate(Bundle icicle) {
 		super.onCreate(icicle);
 		setContentView(R.layout.main);
+		
+		LinearLayout linearLayout = (LinearLayout) findViewById(R.id.linearLayout);
+		
+		final Map<String, ImageView> views = new HashMap<String, ImageView>();
+		
+		for(int i = 0; i < ROWS; i++){
+			for(int j = 0; j < COLS; j++){
+				ImageView myImageView = new ImageView(this);
+				myImageView.setBackgroundColor(color.holo_orange_dark);
+				//myImageView.setId() usar esto para no tener que usar el mapa horrible
+				linearLayout.addView(myImageView, LinearLayout.LayoutParams.FILL_PARENT);
+				views.put(j+"-"+i, myImageView);
+			}
+		}
 
 		handler = new Handler() {
 			@Override
 			public void handleMessage(Message msg) {
 				// do something in the user interface to display data from message
 				Drawable img = (Drawable) msg.obj;
-				Log.i("UI", "Got an image to draw");
-				ImageView myImage = (ImageView) findViewById(R.id.imageToShow);
+				Bundle bundle = msg.getData();
+				Log.i("UI", "Got an image to draw! ImgId: " + bundle.getInt("ImageIdx") 
+						+ ", X: " + bundle.getInt("xOffset")+ ", y: " + bundle.getInt("yOffset"));
+				ImageView myImage = views.get(bundle.getInt("xOffset")+"-"+bundle.getInt("yOffset"));
+				if(myImage == null)
+					Log.e("UI", "Image is null!!! x: " + bundle.getInt("xOffset") + ", y:" + bundle.getInt("yOffset"));
 				myImage.setBackgroundDrawable(img);
 				Log.i("UI", "Drawing!");
-				//Date date = new Date();
 				//System.out.println("* Time: " + date.getMinutes() + " : " + date.getSeconds());
 			}
 		};
