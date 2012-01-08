@@ -20,6 +20,7 @@ public class Client extends Thread {
 	public static final String SERVER_IP = "10.0.2.15"; 
 	public static final int UDP_LISTENING_PORT = 5000;
 	public static final int TCP_COMMUNICATING_PORT = 4444;
+	private static final int MAX_UDP_PACKET_SIZE = 65507;
 	
 	private DatagramSocket socket;
 	private boolean receiving = false;
@@ -47,7 +48,7 @@ public class Client extends Thread {
 			//int idx = 0;
 			while(receiving){
 				
-				byte[] buf = new byte[8000]; //This shouldn't be harcoded
+				byte[] buf = new byte[MAX_UDP_PACKET_SIZE];
 				/* Prepare a UDP-Packet that can 
 				 * contain the data we want to receive */
 				DatagramPacket packet = new DatagramPacket(buf, buf.length);

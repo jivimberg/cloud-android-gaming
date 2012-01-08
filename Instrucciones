@@ -5,3 +5,5 @@
 	redir add udp:5000:5000
 	exit
 4. Start a la app desde el emulador (darle al "Start UDP Traffic")
+
+5. Ver si se puede arreglar el "Stop UD Traffic".
