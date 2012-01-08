@@ -1,6 +1,7 @@
 package com;
 
 import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.DatagramPacket;
@@ -11,6 +12,7 @@ import java.net.Socket;
 import com.utils.ImageUtils;
 
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -26,6 +28,7 @@ public class Client extends Thread {
 	private boolean receiving = false;
 	
 	private Handler uiHandler;
+	private int lastImageIdx;
 	
 	public Client(Handler uiHandler){
 		this.uiHandler = uiHandler;
@@ -61,9 +64,21 @@ public class Client extends Thread {
 				//Log.d("UDP","packet index: " + idx + " -> " + System.currentTimeMillis());
 				//idx++;
 				
-				byte[] rawData = packet.getData();
-				//Log.d("UDP", "rawData length: "+rawData.length);
-				byte[] data = ImageUtils.extractBytes(rawData);
+				byte[] data = new byte[MAX_UDP_PACKET_SIZE];
+				data = ImageUtils.extractBytes(packet.getData());
+				ByteArrayInputStream bais = new ByteArrayInputStream(data);
+				DataInputStream dis = new DataInputStream(bais);
+				int imageIdx = dis.readInt();
+				
+//				if(imageIdx < lastImageIdx){
+//					continue;
+//				}else if(imageIdx > lastImageIdx){
+//					lastImageIdx = imageIdx;
+//				}
+				
+				int xOffset = dis.readInt();
+				int yOffset = dis.readInt();
+				dis.read(data);
 				Log.d("UDP", "data length: "+data.length);
 				InputStream img = new ByteArrayInputStream(data); //Sin desencodear
 				
@@ -73,6 +88,11 @@ public class Client extends Thread {
 				/* Create message to be send to the UI Thread */
 				Message message = new Message();
 				message.obj = drawable;
+				Bundle bundle = new Bundle();
+				bundle.putInt("ImageIdx", imageIdx);
+				bundle.putInt("xOffset", xOffset);
+				bundle.putInt("yOfsset", yOffset);
+				message.setData(bundle);
 				if (uiHandler != null) {
 					// sendMessage
 					uiHandler.sendMessage(message);
