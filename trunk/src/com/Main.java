@@ -1,12 +1,9 @@
 package com;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import src.com.R;
-import src.com.R.id;
 
 import android.R.color;
 import android.app.Activity;
@@ -16,11 +13,11 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.LinearLayout.LayoutParams;
 
 public class Main extends Activity {
 
@@ -30,6 +27,8 @@ public class Main extends Activity {
 	private Button stopUDPTrafficButton;
 	private Handler handler;
 
+	private Map<String, ImageView> views;
+	
 	private Client server;
 
 	/** Called when the activity is first created. */
@@ -38,17 +37,18 @@ public class Main extends Activity {
 		super.onCreate(icicle);
 		setContentView(R.layout.main);
 		
-		LinearLayout linearLayout = (LinearLayout) findViewById(R.id.linearLayout);
+		final LinearLayout linearLayout = (LinearLayout) findViewById(R.id.linearLayout);
 		
-		final Map<String, ImageView> views = new HashMap<String, ImageView>();
+		views = new HashMap<String, ImageView>();
 		
 		for(int i = 0; i < ROWS; i++){
 			for(int j = 0; j < COLS; j++){
 				ImageView myImageView = new ImageView(this);
-				myImageView.setBackgroundColor(color.holo_orange_dark);
-				//myImageView.setId() usar esto para no tener que usar el mapa horrible
-				linearLayout.addView(myImageView, LinearLayout.LayoutParams.FILL_PARENT);
+				//myImageView.setBackgroundColor(color.holo_orange_dark);
+				//myImageView.setId(j*i); //usar esto para no tener que usar el mapa horrible
+				linearLayout.addView(myImageView, i, ViewGroup.LayoutParams.WRAP_CONTENT);
 				views.put(j+"-"+i, myImageView);
+				Log.d("UI","id entered in the map: " + j+"-"+i);
 			}
 		}
 
@@ -58,11 +58,11 @@ public class Main extends Activity {
 				// do something in the user interface to display data from message
 				Drawable img = (Drawable) msg.obj;
 				Bundle bundle = msg.getData();
-				Log.i("UI", "Got an image to draw! ImgId: " + bundle.getInt("ImageIdx") 
-						+ ", X: " + bundle.getInt("xOffset")+ ", y: " + bundle.getInt("yOffset"));
-				ImageView myImage = views.get(bundle.getInt("xOffset")+"-"+bundle.getInt("yOffset"));
-				if(myImage == null)
-					Log.e("UI", "Image is null!!! x: " + bundle.getInt("xOffset") + ", y:" + bundle.getInt("yOffset"));
+				Log.d("UI", "Got an image to draw! ImgId: " + bundle.getInt("ImageIdx") 
+						+ ", x: " + bundle.getInt("xOffset")+ ", y: " + bundle.getInt("yOffset"));
+				String idSearched = bundle.getInt("xOffset")+"-"+bundle.getInt("yOffset");
+				ImageView myImage = views.get(idSearched);
+				Log.d("UI","id looked in the map: " + idSearched);
 				myImage.setBackgroundDrawable(img);
 				Log.i("UI", "Drawing!");
 				//System.out.println("* Time: " + date.getMinutes() + " : " + date.getSeconds());
@@ -76,7 +76,7 @@ public class Main extends Activity {
 				server.start();
 				try {
 					Thread.sleep(500);
-					// server.closeTransaction();
+					server.closeTransaction();
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
