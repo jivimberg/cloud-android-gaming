@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -43,10 +44,13 @@ public class Main extends Activity {
 		
 		for(int i = 0; i < ROWS; i++){
 			for(int j = 0; j < COLS; j++){
-				ImageView myImageView = new ImageView(this);
+				final ImageView myImageView = new ImageView(this);
 				//myImageView.setBackgroundColor(color.holo_orange_dark);
 				//myImageView.setId(j*i); //usar esto para no tener que usar el mapa horrible
-				linearLayout.addView(myImageView, i, ViewGroup.LayoutParams.WRAP_CONTENT);
+				
+				//linearLayout.addView(myImageView, j+4, LayoutParams.MATCH_PARENT);
+				linearLayout.addView(myImageView, 340, 180);
+				
 				views.put(j+"-"+i, myImageView);
 				Log.d("UI","id entered in the map: " + j+"-"+i);
 			}
@@ -56,12 +60,12 @@ public class Main extends Activity {
 			@Override
 			public void handleMessage(Message msg) {
 				// do something in the user interface to display data from message
-				Drawable img = (Drawable) msg.obj;
-				Bundle bundle = msg.getData();
+				final Drawable img = (Drawable) msg.obj;
+				final Bundle bundle = msg.getData();
 				Log.d("UI", "Got an image to draw! ImgId: " + bundle.getInt("ImageIdx") 
 						+ ", x: " + bundle.getInt("xOffset")+ ", y: " + bundle.getInt("yOffset"));
-				String idSearched = bundle.getInt("xOffset")+"-"+bundle.getInt("yOffset");
-				ImageView myImage = views.get(idSearched);
+				final String idSearched = bundle.getInt("xOffset")+"-"+bundle.getInt("yOffset");
+				final ImageView myImage = views.get(idSearched);
 				Log.d("UI","id looked in the map: " + idSearched);
 				myImage.setBackgroundDrawable(img);
 				Log.i("UI", "Drawing!");
@@ -74,12 +78,12 @@ public class Main extends Activity {
 			public void onClick(View v) {
 				server = new Client(handler);
 				server.start();
-				try {
-					Thread.sleep(500);
-					server.closeTransaction();
+				/*try {
+					//Thread.sleep(500);
+					//server.closeTransaction();
 				} catch (InterruptedException e) {
 					e.printStackTrace();
-				}
+				}*/
 			}
 		});
 		
