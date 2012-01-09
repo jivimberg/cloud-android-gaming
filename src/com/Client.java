@@ -50,7 +50,6 @@ public class Client extends Thread {
 			
 			//int idx = 0;
 			while(receiving){
-				
 				byte[] buf = new byte[MAX_UDP_PACKET_SIZE];
 				/* Prepare a UDP-Packet that can 
 				 * contain the data we want to receive */
@@ -66,29 +65,29 @@ public class Client extends Thread {
 				
 				byte[] data = new byte[MAX_UDP_PACKET_SIZE];
 				data = ImageUtils.extractBytes(packet.getData());
-				ByteArrayInputStream bais = new ByteArrayInputStream(data);
-				DataInputStream dis = new DataInputStream(bais);
+				final ByteArrayInputStream bais = new ByteArrayInputStream(data);
+				final DataInputStream dis = new DataInputStream(bais);
 				int imageIdx = dis.readInt();
 				
-				if(imageIdx < lastImageIdx){
+				/*if(imageIdx < lastImageIdx){
 					continue;
 				}else if(imageIdx > lastImageIdx){
 					lastImageIdx = imageIdx;
-				}
+				}*/
 				
 				int xOffset = dis.readInt();
 				int yOffset = dis.readInt();
 				dis.read(data);
 				//Log.d("UDP", "data length: "+data.length);
-				InputStream img = new ByteArrayInputStream(data); //Sin desencodear
+				final InputStream img = new ByteArrayInputStream(data); //Sin desencodear
 				
 				/* Create Drawable */
-				Drawable drawable = Drawable.createFromStream(img, "StreamName"); 
+				final Drawable drawable = Drawable.createFromStream(img, "StreamName"); 
 				
 				/* Create message to be send to the UI Thread */
-				Message message = new Message();
+				final Message message = new Message();
 				message.obj = drawable;
-				Bundle bundle = new Bundle();
+				final Bundle bundle = new Bundle();
 				bundle.putInt("ImageIdx", imageIdx);
 				bundle.putInt("xOffset", xOffset);
 				bundle.putInt("yOffset", yOffset);
