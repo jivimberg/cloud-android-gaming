@@ -64,16 +64,16 @@ public class Client extends Thread {
 				//idx++;
 				
 				byte[] data = new byte[MAX_UDP_PACKET_SIZE];
-				data = ImageUtils.extractBytes(packet.getData());
-				final ByteArrayInputStream bais = new ByteArrayInputStream(data);
+//				data = ImageUtils.extractBytes(packet.getData());
+				final ByteArrayInputStream bais = new ByteArrayInputStream(packet.getData());
 				final DataInputStream dis = new DataInputStream(bais);
 				int imageIdx = dis.readInt();
 				
-				/*if(imageIdx < lastImageIdx){
-					continue;
-				}else if(imageIdx > lastImageIdx){
-					lastImageIdx = imageIdx;
-				}*/
+//				if(imageIdx < lastImageIdx){
+//					continue;
+//				}else if(imageIdx > lastImageIdx){
+//					lastImageIdx = imageIdx;
+//				}
 				
 				int xOffset = dis.readInt();
 				int yOffset = dis.readInt();

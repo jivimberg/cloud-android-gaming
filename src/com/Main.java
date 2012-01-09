@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
+import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -38,7 +39,7 @@ public class Main extends Activity {
 		super.onCreate(icicle);
 		setContentView(R.layout.main);
 		
-		final LinearLayout linearLayout = (LinearLayout) findViewById(R.id.linearLayout);
+		final GridLayout gridLayout = (GridLayout) findViewById(R.id.gridLayout1);
 		
 		views = new HashMap<String, ImageView>();
 		
@@ -49,7 +50,7 @@ public class Main extends Activity {
 				//myImageView.setId(j*i); //usar esto para no tener que usar el mapa horrible
 				
 				//linearLayout.addView(myImageView, j+4, LayoutParams.MATCH_PARENT);
-				linearLayout.addView(myImageView, 340, 180);
+				gridLayout.addView(myImageView);
 				
 				views.put(j+"-"+i, myImageView);
 				Log.d("UI","id entered in the map: " + j+"-"+i);
