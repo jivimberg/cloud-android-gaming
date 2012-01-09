@@ -70,16 +70,16 @@ public class Client extends Thread {
 				DataInputStream dis = new DataInputStream(bais);
 				int imageIdx = dis.readInt();
 				
-//				if(imageIdx < lastImageIdx){
-//					continue;
-//				}else if(imageIdx > lastImageIdx){
-//					lastImageIdx = imageIdx;
-//				}
+				if(imageIdx < lastImageIdx){
+					continue;
+				}else if(imageIdx > lastImageIdx){
+					lastImageIdx = imageIdx;
+				}
 				
 				int xOffset = dis.readInt();
 				int yOffset = dis.readInt();
 				dis.read(data);
-				Log.d("UDP", "data length: "+data.length);
+				//Log.d("UDP", "data length: "+data.length);
 				InputStream img = new ByteArrayInputStream(data); //Sin desencodear
 				
 				/* Create Drawable */
@@ -91,11 +91,10 @@ public class Client extends Thread {
 				Bundle bundle = new Bundle();
 				bundle.putInt("ImageIdx", imageIdx);
 				bundle.putInt("xOffset", xOffset);
-				bundle.putInt("yOfsset", yOffset);
+				bundle.putInt("yOffset", yOffset);
 				message.setData(bundle);
 				if (uiHandler != null) {
-					// sendMessage
-					uiHandler.sendMessage(message);
+					uiHandler.sendMessage(message); // sendMessage
 					Log.i("Server", "Message sent to UI");
 				}
 				
