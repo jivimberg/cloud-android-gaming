@@ -5,7 +5,6 @@ import java.util.Map;
 
 import src.com.R;
 
-import android.R.color;
 import android.app.Activity;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -13,18 +12,15 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 
 public class Main extends Activity {
 
-	private static final int COLS = 2;
-	private static final int ROWS = 2;
+	private static final int COLS = 4;
+	private static final int ROWS = 4;
 	private Button startUDPTrafficButton;
 	private Button stopUDPTrafficButton;
 	private Handler handler;

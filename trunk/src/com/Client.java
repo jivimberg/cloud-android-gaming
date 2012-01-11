@@ -1,15 +1,13 @@
 package com;
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.Socket;
-
-import com.utils.ImageUtils;
 
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -50,10 +48,10 @@ public class Client extends Thread {
 			
 			//int idx = 0;
 			while(receiving){
-				byte[] buf = new byte[MAX_UDP_PACKET_SIZE];
+				byte[] data = new byte[MAX_UDP_PACKET_SIZE];
 				/* Prepare a UDP-Packet that can 
 				 * contain the data we want to receive */
-				DatagramPacket packet = new DatagramPacket(buf, buf.length);
+				DatagramPacket packet = new DatagramPacket(data, data.length);
 				Log.i("UDP", "Receiving...");
 
 				/* Receive the UDP-Packet */
@@ -63,7 +61,7 @@ public class Client extends Thread {
 				//Log.d("UDP","packet index: " + idx + " -> " + System.currentTimeMillis());
 				//idx++;
 				
-				byte[] data = new byte[MAX_UDP_PACKET_SIZE];
+
 //				data = ImageUtils.extractBytes(packet.getData());
 				final ByteArrayInputStream bais = new ByteArrayInputStream(packet.getData());
 				final DataInputStream dis = new DataInputStream(bais);
@@ -74,15 +72,13 @@ public class Client extends Thread {
 //				}else if(imageIdx > lastImageIdx){
 //					lastImageIdx = imageIdx;
 //				}
-				
 				int xOffset = dis.readInt();
 				int yOffset = dis.readInt();
 				dis.read(data);
 				//Log.d("UDP", "data length: "+data.length);
-				final InputStream img = new ByteArrayInputStream(data); //Sin desencodear
 				
 				/* Create Drawable */
-				final Drawable drawable = Drawable.createFromStream(img, "StreamName"); 
+				final Drawable drawable = Drawable.createFromStream(bais, "StreamName"); 
 				
 				/* Create message to be send to the UI Thread */
 				final Message message = new Message();
