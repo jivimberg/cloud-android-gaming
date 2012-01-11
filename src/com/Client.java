@@ -1,6 +1,5 @@
 package com;
 
-import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -46,7 +45,7 @@ public class Client extends Thread {
 			socket = new DatagramSocket(UDP_LISTENING_PORT, serverAddr);
 			receiving = true;
 			
-			//int idx = 0;
+			int idx = 0;
 			while(receiving){
 				byte[] data = new byte[MAX_UDP_PACKET_SIZE];
 				/* Prepare a UDP-Packet that can 
@@ -57,9 +56,8 @@ public class Client extends Thread {
 				/* Receive the UDP-Packet */
 				socket.receive(packet);
 				Log.i("UDP", "Packet received");
-				//Log.d("UDP", ""+System.currentTimeMillis());
-				//Log.d("UDP","packet index: " + idx + " -> " + System.currentTimeMillis());
-				//idx++;
+				Log.d("UDP", "packet index "+ idx + " and time: " +System.currentTimeMillis());
+				idx++;
 				
 
 //				data = ImageUtils.extractBytes(packet.getData());
