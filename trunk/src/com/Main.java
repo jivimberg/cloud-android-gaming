@@ -59,14 +59,14 @@ public class Main extends Activity {
 				// do something in the user interface to display data from message
 				final Drawable img = (Drawable) msg.obj;
 				final Bundle bundle = msg.getData();
-				Log.d("UI", "Got an image to draw! ImgId: " + bundle.getInt("ImageIdx") 
-						+ ", x: " + bundle.getInt("xOffset")+ ", y: " + bundle.getInt("yOffset"));
-				final String idSearched = bundle.getInt("xOffset")+"-"+bundle.getInt("yOffset");
+				final int x = bundle.getInt("xOffset");
+				final int y = bundle.getInt("yOffset");
+				Log.d("UI", "Got an image to draw! ImgId: " + bundle.getInt("ImageIdx") + ", x: " + x + ", y: " + y);
+				final String idSearched = x+"-"+y;
 				final ImageView myImage = views.get(idSearched);
-				Log.d("UI","id looked in the map: " + idSearched);
+				//Log.d("UI","id looked in the map: " + idSearched);
 				myImage.setBackgroundDrawable(img);
-				Log.i("UI", "Drawing!");
-				//System.out.println("* Time: " + date.getMinutes() + " : " + date.getSeconds());
+				//Log.i("UI", "Drawing!");
 			}
 		};
 		

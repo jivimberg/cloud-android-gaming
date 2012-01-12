@@ -3,10 +3,13 @@ package com;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.Socket;
+
+import com.utils.ImageUtils;
 
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -46,6 +49,7 @@ public class Client extends Thread {
 			receiving = true;
 			
 			int idx = 0;
+			int lost = 0;
 			while(receiving){
 				byte[] data = new byte[MAX_UDP_PACKET_SIZE];
 				/* Prepare a UDP-Packet that can 
@@ -55,28 +59,31 @@ public class Client extends Thread {
 
 				/* Receive the UDP-Packet */
 				socket.receive(packet);
-				Log.i("UDP", "Packet received");
-				Log.d("UDP", "packet index "+ idx + " and time: " +System.currentTimeMillis());
+				//Log.i("UDP", "Packet received");
+				//Log.d("UDP", "packet index "+ idx + " and time: " +System.currentTimeMillis());
 				idx++;
 				
 
-//				data = ImageUtils.extractBytes(packet.getData());
+				//data = ImageUtils.extractBytes(packet.getData());
 				final ByteArrayInputStream bais = new ByteArrayInputStream(packet.getData());
 				final DataInputStream dis = new DataInputStream(bais);
 				int imageIdx = dis.readInt();
 				
-//				if(imageIdx < lastImageIdx){
-//					continue;
-//				}else if(imageIdx > lastImageIdx){
-//					lastImageIdx = imageIdx;
-//				}
+				/*if(imageIdx < lastImageIdx){
+					lost++;
+					Log.d("UDP", "lost one! Total: " + lost);
+					continue;
+				}else if(imageIdx > lastImageIdx){
+					lastImageIdx = imageIdx;
+				}*/
 				int xOffset = dis.readInt();
 				int yOffset = dis.readInt();
 				dis.read(data);
 				//Log.d("UDP", "data length: "+data.length);
+				final InputStream img = new ByteArrayInputStream(data);
 				
 				/* Create Drawable */
-				final Drawable drawable = Drawable.createFromStream(bais, "StreamName"); 
+				final Drawable drawable = Drawable.createFromStream(img, "StreamName"); 
 				
 				/* Create message to be send to the UI Thread */
 				final Message message = new Message();
