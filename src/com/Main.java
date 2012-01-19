@@ -1,8 +1,5 @@
 package com;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import src.com.R;
 
 import android.app.Activity;
@@ -24,8 +21,6 @@ public class Main extends Activity {
 	private Button startUDPTrafficButton;
 	private Button stopUDPTrafficButton;
 	private Handler handler;
-
-	private Map<String, ImageView> views;
 	
 	private Client server;
 
@@ -36,20 +31,12 @@ public class Main extends Activity {
 		setContentView(R.layout.main);
 		
 		final GridLayout gridLayout = (GridLayout) findViewById(R.id.gridLayout1);
-		
-		views = new HashMap<String, ImageView>();
-		
 		for(int i = 0; i < ROWS; i++){
 			for(int j = 0; j < COLS; j++){
 				final ImageView myImageView = new ImageView(this);
-				//myImageView.setBackgroundColor(color.holo_orange_dark);
-				//myImageView.setId(j*i); //usar esto para no tener que usar el mapa horrible
-				
-				//linearLayout.addView(myImageView, j+4, LayoutParams.MATCH_PARENT);
+				myImageView.setId(Integer.valueOf(""+j+i));
 				gridLayout.addView(myImageView);
-				
-				views.put(j+"-"+i, myImageView);
-				Log.d("UI","id entered in the map: " + j+"-"+i);
+				Log.d("UI","id setted: " + j+"-"+i);
 			}
 		}
 
@@ -58,13 +45,11 @@ public class Main extends Activity {
 			public void handleMessage(Message msg) {
 				// do something in the user interface to display data from message
 				final Drawable img = (Drawable) msg.obj;
-				final Bundle bundle = msg.getData();
-				final int x = bundle.getInt("xOffset");
-				final int y = bundle.getInt("yOffset");
-				Log.d("UI", "Got an image to draw! ImgId: " + bundle.getInt("ImageIdx") + ", x: " + x + ", y: " + y);
-				final String idSearched = x+"-"+y;
-				final ImageView myImage = views.get(idSearched);
-				//Log.d("UI","id looked in the map: " + idSearched);
+				final int x = msg.arg1;
+				final int y = msg.arg2;
+				final String idSearched = ""+x+y;
+				final ImageView myImage = (ImageView) findViewById(Integer.valueOf(idSearched));
+				//myImage.setImageBitmap(img); //No funciona...
 				myImage.setBackgroundDrawable(img);
 				//Log.i("UI", "Drawing!");
 			}
@@ -75,12 +60,6 @@ public class Main extends Activity {
 			public void onClick(View v) {
 				server = new Client(handler);
 				server.start();
-				/*try {
-					//Thread.sleep(500);
-					//server.closeTransaction();
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}*/
 			}
 		});
 		
@@ -88,11 +67,35 @@ public class Main extends Activity {
 		stopUDPTrafficButton = (Button) findViewById(R.id.close_button);
 		stopUDPTrafficButton.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				Log.i("UDP", "S: Wanting to start closure...");
-				server.interrupt();
-				server.closeTransaction();
+				finish();
+				//Log.i("UDP", "S: Wanting to start closure...");
+				//server.interrupt();
+				//server.closeTransaction();
 			}
 		});
 		
 	}
+	
+	@SuppressWarnings("static-access")
+	@Override
+	protected void onPause() {
+		super.onPause();
+		try {
+			Log.d("Activity", "Activity paused!");
+			server.sleep(0);
+		} catch (InterruptedException e) {
+			Log.e("Error", e.getMessage());
+			
+		}
+	}
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+		if(server != null){
+			server.interrupt();
+			Log.d("Activity", "Activity interrupted!");
+		}
+	}
+	
 }
