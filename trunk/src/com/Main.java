@@ -22,9 +22,8 @@ public class Main extends Activity {
 	private Button stopUDPTrafficButton;
 	private Handler handler;
 	
-	private Client server;
+	private Client client;
 
-	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle icicle) {
 		super.onCreate(icicle);
@@ -36,30 +35,27 @@ public class Main extends Activity {
 				final ImageView myImageView = new ImageView(this);
 				myImageView.setId(Integer.valueOf(""+j+i));
 				gridLayout.addView(myImageView);
-				Log.d("UI","id setted: " + j+"-"+i);
 			}
 		}
 
 		handler = new Handler() {
 			@Override
 			public void handleMessage(Message msg) {
-				// do something in the user interface to display data from message
 				final Drawable img = (Drawable) msg.obj;
 				final int x = msg.arg1;
 				final int y = msg.arg2;
 				final String idSearched = ""+x+y;
 				final ImageView myImage = (ImageView) findViewById(Integer.valueOf(idSearched));
-				//myImage.setImageBitmap(img); //No funciona...
 				myImage.setBackgroundDrawable(img);
-				//Log.i("UI", "Drawing!");
+				Log.i("UI", "Drawing!");
 			}
 		};
 		
 		startUDPTrafficButton = (Button) findViewById(R.id.search_button);
 		startUDPTrafficButton.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				server = new Client(handler);
-				server.start();
+				client = new Client(handler);
+				client.start();
 			}
 		});
 		
@@ -67,35 +63,12 @@ public class Main extends Activity {
 		stopUDPTrafficButton = (Button) findViewById(R.id.close_button);
 		stopUDPTrafficButton.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
+				client.setReceiving(false);
 				finish();
-				//Log.i("UDP", "S: Wanting to start closure...");
-				//server.interrupt();
-				//server.closeTransaction();
+				Log.i("Activity", "Activity finished");
 			}
 		});
 		
-	}
-	
-	@SuppressWarnings("static-access")
-	@Override
-	protected void onPause() {
-		super.onPause();
-		try {
-			Log.d("Activity", "Activity paused!");
-			server.sleep(0);
-		} catch (InterruptedException e) {
-			Log.e("Error", e.getMessage());
-			
-		}
-	}
-	
-	@Override
-	protected void onResume() {
-		super.onResume();
-		if(server != null){
-			server.interrupt();
-			Log.d("Activity", "Activity interrupted!");
-		}
 	}
 	
 }
